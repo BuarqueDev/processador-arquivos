@@ -109,8 +109,12 @@ def processar_arquivo(arquivo_pdf, modelo):
         novo_nome = f"ASO {data_exame} {nome_funcionario}.pdf"
         novo_nome = validar_nome_arquivo(novo_nome)
 
+        # Garantir que o diretório temp exista
+        temp_dir = Path("temp")
+        temp_dir.mkdir(parents=True, exist_ok=True)
+
         # Caminho para salvar o novo arquivo
-        novo_caminho = Path(f"temp/{novo_nome}")
+        novo_caminho = temp_dir / novo_nome
 
         # Salvar o PDF renomeado
         with open(novo_caminho, "wb") as f:
