@@ -41,7 +41,7 @@ def extrair_informacoes_gemini(imagem_bytes, modelo):
     
     try:
         # Envia o prompt e a imagem para o modelo Gemini
-        response = modelo.generate_content([
+        response = modelo.generate_content([ 
             prompt,
             {'mime_type': 'application/pdf', 'data': imagem_bytes}  # Envia o PDF diretamente
         ])
@@ -104,7 +104,7 @@ def processar_arquivo(arquivo_pdf, modelo):
             st.warning("Não foi possível extrair todas as informações necessárias.")
             st.write(f"Nome encontrado: {nome_funcionario}")
             st.write(f"Data encontrada: {data_exame}")
-            return False
+            return False, None
 
         novo_nome = f"ASO {data_exame} {nome_funcionario}.pdf"
         novo_nome = validar_nome_arquivo(novo_nome)
@@ -117,11 +117,11 @@ def processar_arquivo(arquivo_pdf, modelo):
             f.write(arquivo_bytes)
 
         # Retorna o caminho do novo arquivo
-        return novo_caminho
+        return True, novo_caminho
 
     except Exception as e:
         st.error(f"Erro ao processar arquivo: {e}")
-        return False
+        return False, None
 
 def main():
     st.title("Renomeador de ASOs")
@@ -153,9 +153,17 @@ def main():
 
             for i, arquivo in enumerate(arquivos):
                 # Processa o arquivo PDF
-                novo_arquivo = processar_arquivo(arquivo, modelo)
-                if novo_arquivo:
+                sucesso, novo_arquivo = processar_arquivo(arquivo, modelo)
+                if sucesso:
                     sucessos += 1
+                    # Exibe o botão de download
+                    with open(novo_arquivo, "rb") as f:
+                        st.download_button(
+                            label="Baixar arquivo renomeado",
+                            data=f,
+                            file_name=novo_arquivo.name,
+                            mime="application/pdf"
+                        )
 
                 # Atualiza a barra de progresso
                 progress = (i + 1) / total
