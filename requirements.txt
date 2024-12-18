@@ -4,3 +4,4 @@ streamlit
 pillow
 python-dotenv
 PyPDF2
+PyMuPDF
