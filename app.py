@@ -239,7 +239,7 @@ def interface_divisao_pdf():
         opcoes["paginas_por_arquivo"] = st.sidebar.number_input(
             "Páginas por arquivo",
             min_value=1,
-            value=2
+            value=1
         )
     
     elif modo == "intervalo_personalizado":
